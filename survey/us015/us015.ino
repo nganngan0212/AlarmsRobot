@@ -18,19 +18,19 @@ void setupUltraSonic()
 }
 
 // compute distance from Sensor to Object
-float distance2Object(int trigPin, int echoPin)
+float distance2Object(int trig_pin, int echo_pin)
 {
     // signaling from TRIG
-    digitalWrite(trigPin, 0);  // turn off TRIG
+    digitalWrite(trig_pin, 0);  // turn off TRIG
     delayMicroseconds(2);
-    digitalWrite(trigPin,1);   // turn on TRIG
+    digitalWrite(trig_pin,1);   // turn on TRIG
     delayMicroseconds(10);  // signal pulse has length 10 micro secs
-    digitalWrite(trigPin, 0);
+    digitalWrite(trig_pin, 0);
 
     // measure time
-    while(!digitalRead(echoPin)) {;}
+    while(!digitalRead(echo_pin)) {;}
     unsigned long start = micros();
-    while(digitalRead(echoPin)) {;}
+    while(digitalRead(echo_pin)) {;}
     unsigned long finish = micros();
 
     // compute distance to object

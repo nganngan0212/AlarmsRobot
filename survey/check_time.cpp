@@ -12,7 +12,7 @@ bool checkTime(string msg, int hour, int minutes)
         int h = msg[0]*10 + msg[1];
         int m = msg[3]*10 + msg[4];
         
-        if(h == hour && m == minutes) return  true; 
+        if(h == hour && m == minutes) return true; 
         else return false;
     }
 }

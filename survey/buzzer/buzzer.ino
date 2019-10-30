@@ -1,22 +1,33 @@
 const int BUTTON = 3;
+const int BUZZER = 10;
 
 void setup()
 {
     pinMode(BUTTON, INPUT);
-    bool is_time = false;
+    pinMode(BUZZER, OUTPUT);
 }
 
-void turnOnBuzzer(int button_pin)
+void turnOnBuzzer(int buzzer_pin)
 {
-    digitalWrite(button_pin, HIGH);
+    digitalWrite(buzzer_pin, HIGH);
 }
 
-void turnOffBuzzer(int button_pin)
+void turnOffBuzzer(int buzzer_pin)
 {
-    digitalWrite(button_pin, LOW);
+    digitalWrite(buzzer_pin, LOW);
 }
+    
+bool checkButton(int button_pin)
+{
+    return digitalRead(button_pin);
+}
+
+bool is_time = false;
 
 void loop()
 {
-    
+    // is_time = check_time(sth);
+    if(is_time) turnOnBuzzer(BUTTON);
+
+    if(checkButton(BUTTON)) turnOffBuzzer(BUTTON);
 }

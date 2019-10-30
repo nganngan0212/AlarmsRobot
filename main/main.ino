@@ -1,22 +1,3 @@
-   /*
-Software used: Arduino Remote LITE (Bluetooth & Wifi)
-Connect Arudino with Bluetooth module
-    HC-06     Arduino
-     +5V        5V
-     GND        GND
-     TX         5
-     RX         4
-
-Connect Arduino with DS1302 module
-     DS1302     Arduino
-     Vcc        5V
-     GND        GND
-     CLK        6
-     DAT        7
-     RST        8
-
-*/
-
 #include <AFMotor.h> //L293D
 #include <SoftwareSerial.h> //HC06
 #include <virtuabotixRTC.h> // DS1320

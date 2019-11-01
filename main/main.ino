@@ -29,7 +29,7 @@ Connect Arduino with DS1302 module
 #define SPEEDMOTOR2 180
 #define TRIG 12
 #define ECHO 13
-#define BUTTON A2
+#define BUTTON 3
 
 const int buzzer = 10;
 
@@ -96,11 +96,7 @@ bool check(String s, int hour, int minutes)
 */
 void offBuzzer()
 {
-    int a = analogRead(BUTTON);
-    if(a > 0)
-    {
         digitalWrite(buzzer, LOW);
-    }
 }
 
 void setup()
@@ -146,6 +142,7 @@ float distance()
     return dis;
 }
 
+bool ans = false;
 void loop() {
   // put your main code here, to run repeatedly:
     Clock.updateTime();
@@ -154,16 +151,28 @@ void loop() {
     int minut = Clock.minutes;
 
     String msg;
-    bool ans = false;
     if(hc06.available())
     {
         msg = hc06.readString();
         Serial.println(msg);
         ans = check(msg, hou, minut);
     } 
+    Serial.print(hou);
+    Serial.print(":");
+    Serial.println(minut);
 
-    if(ans)
+    // on/off buzzer
+    if(ans == true)
     {
         onBuzzer();
+        int a = digitalRead(BUTTON);
+        if(a > 0)
+        {
+            offBuzzer();
+            ans = false;
+            msg = " ";
+        }
     }
+  
+    delay(500);
 }

@@ -170,11 +170,11 @@ void loop() {
         {
             if(dis1 < 50)
             {
-                //chay lui
+                // chay lui
             }
             if(dis2 < 50)
             {
-                //chay tien
+                // chay tien
             }
         }
     }

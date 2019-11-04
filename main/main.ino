@@ -1,22 +1,3 @@
-   /*
-Software used: Arduino Remote LITE (Bluetooth & Wifi)
-Connect Arudino with Bluetooth module
-    HC-06     Arduino
-     +5V        5V
-     GND        GND
-     TX         5
-     RX         4
-
-Connect Arduino with DS1302 module
-     DS1302     Arduino
-     Vcc        5V
-     GND        GND
-     CLK        6
-     DAT        7
-     RST        8
-
-*/
-
 #include <AFMotor.h> //L293D
 #include <SoftwareSerial.h> //HC06
 #include <virtuabotixRTC.h> // DS1320
@@ -27,8 +8,13 @@ Connect Arduino with DS1302 module
 #define RST 8
 #define SPEEDMOTOR1 255
 #define SPEEDMOTOR2 180
-// #define TRIG 12
-// #define ECHO 13
+//ultrasonic sensor1 in front
+#define TRIG1 12
+#define ECHO1 13
+//ultra sensor 2 behind
+#define TRIG2 9
+#define ECHO2 11
+
 #define BUTTON 3
 
 const int buzzer = 10;
@@ -176,8 +162,21 @@ void loop() {
         int dis1 = distance(TRIG1, ECHO1);
         int dis2 = distance(TRIG2, ECHO2);
 
-        if(dis1 > )
-        
+        if (dis1 < 50 && dis2 < 50)
+        {
+            //bla bla
+        }
+        else
+        {
+            if(dis1 < 50)
+            {
+                //chay lui
+            }
+            if(dis2 < 50)
+            {
+                //chay tien
+            }
+        }
     }
 
   

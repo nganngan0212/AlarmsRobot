@@ -27,8 +27,8 @@ Connect Arduino with DS1302 module
 #define RST 8
 #define SPEEDMOTOR1 255
 #define SPEEDMOTOR2 180
-#define TRIG 12
-#define ECHO 13
+// #define TRIG 12
+// #define ECHO 13
 #define BUTTON 3
 
 const int buzzer = 10;
@@ -80,12 +80,7 @@ bool check(String s, int hour, int minutes)
     else{
         int h = (s[0]-48)*10 + (s[1]-48);
         int m = (s[3]-48)*10 + (s[4]-48);
-        if(h == hour && m == minutes)
-        {
-            return  true;
-        } 
-        else{
-            return false;
+        return (h == hour && m == minutes)
         }
     }
 }
@@ -123,28 +118,30 @@ void setup()
 }
 
 //Hàm distance trả về khoảng cách từ sensor tới vật cản gần nhất 
-float distance()
+float distance2Object(int trigPin, int echoPin)
 {
-    int startTime = 0, finishTime = 0, duration = 0;
-    digitalWrite(TRIG, LOW);
+    // signaling from TRIG
+    digitalWrite(trigPin, 0);  // turn off TRIG
     delayMicroseconds(2);
-    digitalWrite(TRIG, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG, LOW);
+    digitalWrite(trigPin,1);   // turn on TRIG
+    delayMicroseconds(10);  // signal pulse has length 10 micro secs
+    digitalWrite(trigPin, 0);
 
-    while(digitalRead(ECHO) == 0){;}
-    startTime = micros(); 
-    while(digitalRead(ECHO) == 1){;}
-    finishTime = micros();
+    // measure time
+    while(!digitalRead(echoPin)) {;}
+    unsigned long start = micros();
+    while(digitalRead(echoPin)) {;}
+    unsigned long finish = micros();
 
-    duration = -startTime + finishTime;
-    float dis =(duration / 2.0) * (34300.0/1000000);
-    return dis;
+    // compute distance to object
+    float distance = (finish - start)/2.0*0.03432;
+    return distance;
 }
+
 
 bool ans = false;
 void loop() {
-  // put your main code here, to run repeatedly:
+    //update time
     Clock.updateTime();
 
     int hou = Clock.hours;
@@ -154,9 +151,10 @@ void loop() {
     if(hc06.available())
     {
         msg = hc06.readString();
-        Serial.println(msg);
+        Serial.println(msg);//print message from phone
         ans = check(msg, hou, minut);
     } 
+    //print hour and minutes
     Serial.print(hou);
     Serial.print(":");
     Serial.println(minut);
@@ -165,14 +163,23 @@ void loop() {
     if(ans == true)
     {
         onBuzzer();
-        int a = digitalRead(BUTTON);
-        if(a > 0)
-        {
-            offBuzzer();
-            ans = false;
-            msg = " ";
-        }
+
+        // int a = digitalRead(BUTTON);
+        // if(a > 0)
+        // {
+        //     offBuzzer();
+        //     ans = false;
+        //     msg = " ";
+        //     Stop();
+        // }
+
+        int dis1 = distance(TRIG1, ECHO1);
+        int dis2 = distance(TRIG2, ECHO2);
+
+        if(dis1 > )
+        
     }
+
   
     delay(500);
 }

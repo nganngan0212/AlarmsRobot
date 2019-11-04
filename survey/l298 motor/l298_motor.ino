@@ -38,12 +38,17 @@ int speedRandom()
     return random(180,255);
 }
 
-void setup()
+void setupL298()
 {
     pinMode(IN1, OUTPUT);
     pinMode(IN2, OUTPUT);
     pinMode(IN3, OUTPUT);
-    pinMode(IN4, OUTPUT);   
+    pinMode(IN4, OUTPUT);  
+}
+
+void setup()
+{
+    setupL298();
 }
 
 void loop()

@@ -1,0 +1,44 @@
+function DISTANCE_2_OBJECT(Ultrasonic)
+    return distance from Utrasonic to Object
+end
+
+function IS_NEAR_OBJECT(Ultrasonic)
+    return TRUE if DISTANCE_2_OBJECT < 20cm
+    else return FALSE
+end
+
+function CONTROL_MOTOR
+    if(IS_NEAR_OBJECT(FrontUltrasonic) && IS_NEAR_OBJECT(BehindUltraSonic))
+    {
+        ROTATE until one of them FALSE
+    }
+    else
+    {
+        if(IS_NEAR_OBJECT(FrontUltrasonic))
+        {
+            RUN_BACKWARD
+        }
+        if(IS_NEAR_OBJECT(BehindUltraSonic))
+        {
+            RUN_FORWARD
+        }
+    }
+end
+
+function IS_TIME_UP(CurrentTime, StartTime)
+    if CurrentTime - StartTime > 5
+    {
+        StartTime = CurrentTime
+        return TRUE
+    }
+    else return FALSE
+end
+
+function CHANGE_SPEED_ROBOT
+    SpeedLeft = rand(180, 255);
+    SpeedRight = rand(180, 255);
+end
+
+function RUN*
+    if(IS_TIME_UP) CHANGE_SPEED_ROBOT
+end

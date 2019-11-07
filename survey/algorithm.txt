@@ -5,7 +5,7 @@ end
 function IS_NEAR_OBJECT(Ultrasonic)
     return TRUE if DISTANCE_2_OBJECT < 20cm
     else return FALSE
-end
+end 
 
 function CONTROL_MOTOR
     if(IS_NEAR_OBJECT(FrontUltrasonic) && IS_NEAR_OBJECT(BehindUltraSonic))
@@ -40,5 +40,6 @@ function CHANGE_SPEED_ROBOT
 end
 
 function RUN*
+    //include RUN_BACKWARD, RUN_FORWARD but different direction
     if(IS_TIME_UP) CHANGE_SPEED_ROBOT
 end

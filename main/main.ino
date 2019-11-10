@@ -72,8 +72,6 @@ void loop()
         turnOnBuzzer(BUZZER);
 
         // Run motor
-        float dis1 = distance2Object(TRIG1, ECHO1);
-        float dis2 = distance2Object(TRIG2, ECHO2);
         while(isNearObject(TRIG1, ECHO2) && isNearObject(TRIG2, ECHO2))
         {
             // Rotate until one of them false

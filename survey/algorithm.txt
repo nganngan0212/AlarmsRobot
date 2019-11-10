@@ -1,3 +1,7 @@
+function IS_ALARM(CurrentTime, AlarmTime)
+    return CurrentTime == AlarmTime
+end
+
 function DISTANCE_2_OBJECT(Ultrasonic)
     return distance from Utrasonic to Object
 end

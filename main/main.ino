@@ -177,10 +177,9 @@ void loop() {
     Serial.println(minut);
  
     // on/off buzzer
-//    if(ans == true)
-    if(1)
+   if(ans)
     {
-//        onBuzzer();
+        onBuzzer();
         
         float dis1 = distance2Object(TRIG1, ECHO1);
         Serial.print("Distance1 = ");
@@ -189,17 +188,24 @@ void loop() {
         Serial.print("Distance2 = ");
         Serial.println(dis2);
 
-        if(dis1 < 30)
-        {
-            moveDown(255, IN1, IN2);
-            moveDown(255, IN3, IN4);
-        }
-        
-        if(dis2 < 30)
+        if(dis1 < 20 && dis2 < 20)
         {
             moveUp(255, IN1, IN2);
-            moveUp(255, IN3, IN4);
+            moveDown(255, IN3, IN4);
+        }
+        else{ 
+            if(dis1 < 20)
+            {
+                moveDown(255, IN1, IN2);
+                moveDown(255, IN3, IN4);
+            }
+            
+            if(dis2 < 20)
+            {
+                moveUp(255, IN1, IN2);
+                moveUp(255, IN3, IN4);
+            }
         }
     }
-        delay(1000);
+    delay(200);
 }

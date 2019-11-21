@@ -7,8 +7,8 @@ Setup connection:
         ECHO        7
 */
 
-const int TRIG = 8;
-const int ECHO = 7;
+const int TRIG = 12;
+const int ECHO = 13;
 
 // setup UltraSonic US-015
 void setupUltraSonic()
@@ -27,14 +27,15 @@ float distance2Object(int trigPin, int echoPin)
     delayMicroseconds(10);  // signal pulse has length 10 micro secs
     digitalWrite(trigPin, 0);
 
-    // measure time
-    while(!digitalRead(echoPin)) {;}
-    unsigned long start = micros();
-    while(digitalRead(echoPin)) {;}
-    unsigned long finish = micros();
-
+    // // measure time
+    // while(!digitalRead(echoPin)) {;}
+    // unsigned long start = micros();
+    // while(digitalRead(echoPin)) {;}
+    // unsigned long finish = micros();
+    
+    float duration = pulseIn(echoPin,HIGH);
     // compute distance to object
-    float distance = (finish - start)/2.0*0.03432;
+    float distance = duration/2.0*0.03432;
     return distance;
 }
 

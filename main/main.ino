@@ -2,6 +2,8 @@
 #include <virtuabotixRTC.h> // DS1320
 #include <string.h>
 
+#define UNSET -1
+
 // Motors
 const int IN1 = A0;
 const int IN2 = A1;
@@ -10,8 +12,8 @@ const int IN4 = A3;
 const int MAX_SPEED = 255;
 const int MIN_SPEED = 0;
 void setupL298();
-void moveUp(int& speed, const int& pin1, const int& pin2);
-void moveDown(int& speed, const int& pin1, const int& pin2);
+void moveUp(int speed, const int pin1, const int pin2);
+void moveDown(int speed, const int pin1, const int pin2);
 int speedRandom();
 
 // Bluetooth
@@ -22,9 +24,9 @@ void setupHC06();
 
 // Real time DS1302
 virtuabotixRTC myRTC(6, 7, 8);// CLK, DAT, RST
-bool isTimeUp(virtuabotixRTC rtc, int& start_time);
+bool isTimeUp(virtuabotixRTC rtc, int start_time);
 void printCurrentTime(virtuabotixRTC rtc);
-bool checkTime(string msg, int hour, int minutes);
+bool checkTime(String msg, int hour, int minutes);
 
 // US015
 const int TRIG1 = 10;
@@ -32,7 +34,7 @@ const int ECHO1 = 11;
 const int TRIG2 = 12;
 const int ECHO2 = 13;
 void setupUltraSonic(int trig_pin, int echo_pin);
-float distance2Object(int trig_pin, int echo_pin)
+float distance2Object(int trig_pin, int echo_pin);
 
 // Buzzer
 const int BUZZER = 9;
@@ -48,8 +50,8 @@ void setup()
     pinMode(BUZZER, OUTPUT); // Buzzer
 }
 
-int start_time = NULL;
-string msg;
+int start_time = UNSET;
+String msg;
 bool is_time = false;
 
 // Main function
@@ -57,8 +59,8 @@ void loop()
 {
     // Get time from Bluetooth
     myRTC.updateTime();
-    h = myRTC.hours;
-    m = myRTC.minutes;
+    int h = myRTC.hours;
+    int m = myRTC.minutes;
     if(hc06.available())
     {
         msg = hc06.readString();
@@ -78,11 +80,12 @@ void loop()
             moveDown(180, IN1, IN2);
             moveUp(180, IN3, IN4);
         }
-        
+
+        int speed_left = 0, speed_right = 0;
         if(isTimeUp(myRTC, start_time))
         {
-            int speed_left = speedRandom();
-            int speed_right = speedRandom();
+            speed_left = speedRandom();
+            speed_right = speedRandom();
         }
 
         if(isNearObject(TRIG1, ECHO1))
@@ -104,14 +107,14 @@ void loop()
 /************************
 * Motor 
 ************************/
-void moveUp(int& speed, const int& pin1, const int& pin2)
+void moveUp(int speed, const int pin1, const int pin2)
 {
     // speed = checkSpeed(speed);
     analogWrite(pin1, speed);
     analogWrite(pin2, MIN_SPEED);
 }
 
-void moveDown(int& speed, const int& pin1, const int& pin2)
+void moveDown(int speed, const int pin1, const int pin2)
 {
     // speed = checkSpeed(speed);
     analogWrite(pin1, MIN_SPEED);
@@ -143,10 +146,10 @@ void setupHC06()
 /************************
 * DS1302
 ************************/
-bool isTimeUp(virtuabotixRTC rtc, int& start_time)
+bool isTimeUp(virtuabotixRTC rtc, int start_time)
 {
     rtc.updateTime();
-    if(start_time == NULL)
+    if(start_time == UNSET)
     {
         start_time = rtc.hours*3600 + rtc.minutes*60 + rtc.seconds;
         return true;
@@ -183,7 +186,7 @@ void printCurrentTime(virtuabotixRTC rtc)
     Serial.println(rtc.seconds);
 }
 
-bool checkTime(string msg, int hour, int minutes)
+bool checkTime(String msg, int hour, int minutes)
 {
     int len = msg.length();
     if(len != 5) return false;
@@ -229,7 +232,7 @@ float distance2Object(int trig_pin, int echo_pin)
 
 bool isNearObject(int trig_pin, int echo_pin)
 {
-    return (distance2Object(trig_pin, echo_pin) < 20)
+    return (distance2Object(trig_pin, echo_pin) < 20);
 }
 
 /************************

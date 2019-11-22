@@ -1,4 +1,3 @@
-#include <AFMotor.h> //L293D
 #include <SoftwareSerial.h> //HC06
 #include <virtuabotixRTC.h> // DS1320
 #include <string.h>
@@ -26,11 +25,6 @@
 
 #define buzzer 9
 
-// const int rxPin = 5;
-// const int txPin = 4;
-
-int startTime = 0;
-
 virtuabotixRTC Clock(6, 7, 8);
 
 SoftwareSerial hc06(rxPin, txPin);
@@ -41,7 +35,7 @@ void onBuzzer()
     digitalWrite(buzzer,HIGH);
 }
 
-// 
+// setup HC06
 void setupHC06()
 {
     hc06.begin(9600);   
@@ -120,6 +114,7 @@ float distance2Object(int trigPin, int echoPin)
     return distance;
 }
 
+//change speed
 int changeSpeed(int speed)
 {
     long int time = millis() - startTime;
@@ -154,6 +149,7 @@ void setup()
 }
 
 bool ans = false;
+int startTime = 0;
 
 void loop() {
     //update time
@@ -188,25 +184,34 @@ void loop() {
         Serial.print("Distance2 = ");
         Serial.println(dis2);
 
+        int speed1 = 255;
+        int speed2 = 255;
+
         if(dis1 < 20 && dis2 < 20)
         {
-            moveUp(255, IN1, IN2);
-            moveDown(255, IN3, IN4);
+            moveUp(speed1, IN1, IN2);
+            moveDown(speed2, IN3, IN4);
             Serial.println("Left up, Right down.");
+            changeSpeed(speed1);
+            changeSpeed(speed2);
         }
         else{ 
             if(dis1 < 20)
             {
-                moveDown(255, IN1, IN2);
-                moveDown(255, IN3, IN4);
+                moveDown(speed1, IN1, IN2);
+                moveDown(speed2, IN3, IN4);
                 Serial.println("Move Up.");
+                changeSpeed(speed2);
+                changeSpeed(speed1);
             }
             
             if(dis2 < 20)
             {
-                moveUp(255, IN1, IN2);
-                moveUp(255, IN3, IN4);
+                moveUp(speed1, IN1, IN2);
+                moveUp(speed2, IN3, IN4);
                 Serial.println("Move Down.");
+                changeSpeed(speed2);
+                changeSpeed(speed1);
             }
         }
     }

@@ -2,6 +2,8 @@
 #include <virtuabotixRTC.h> // DS1320
 #include <string.h>
 
+#define UNSET -1
+
 #define CLK 6
 #define DAT 7
 #define RST 8
@@ -29,7 +31,7 @@ virtuabotixRTC Clock(6, 7, 8);
 
 SoftwareSerial hc06(rxPin, txPin);
 
-//bật chuông báo
+// turn on Buzzer
 void onBuzzer()
 {
     digitalWrite(buzzer,HIGH);
@@ -73,11 +75,7 @@ int speedRandom()
     return random(180,255);
 }
 
-/*
-    Hàm check có nhiệm vụ so sánh sâu s(giờ đặt báo thức) với hai giá trị hour(giờ), và minutes(phút) ở hiện tại
-    trả vể True nếu thời điểm hiện tại bằng s
-    ngc lại trả về False
-*/
+// check is alarm time
 bool check(String s, int hour, int minutes)
 {
     int len = s.length();
@@ -93,7 +91,7 @@ bool check(String s, int hour, int minutes)
         }
 }
 
-//Hàm distance2Object trả về khoảng cách từ sensor tới vật cản gần nhất
+// Return distance from robot to objects
 float distance2Object(int trigPin, int echoPin)
 {
     // signaling from TRIG
@@ -114,17 +112,24 @@ float distance2Object(int trigPin, int echoPin)
     return distance;
 }
 
-//change speed
-int changeSpeed(int speed)
+bool isChangeSpeed(virtuabotixRTC rtc, int start_time)
 {
-    long int time = millis() - startTime;
-
-    if(time > 5000)
+    rtc.updateTime();
+    if(start_time == UNSET)
     {
-        speed = speedRandom();
-        startTime   = millis();
+        start_time = rtc.hours*3600 + rtc.minutes*60 + rtc.seconds;
+        return true;
     }
-    return speed;
+    else
+    {
+        int cur_time = rtc.hours*3600 + rtc.minutes*60 + rtc.seconds;
+        if(cur_time - start_time > 5)
+        {
+            start_time = cur_time;
+            return true;
+        }
+        return false;
+    }
 }
 
 void setup()
@@ -149,7 +154,7 @@ void setup()
 }
 
 bool ans = false;
-int startTime = 0;
+int start_time = UNSET;
 
 void loop() {
     //update time
@@ -163,7 +168,7 @@ void loop() {
     {
         msg = hc06.readString();
         Serial.print("Message: ");
-        Serial.println(msg);//print message from phone
+        Serial.println(msg); //print message from phone
         ans = check(msg, hou, minut);
     } 
 
@@ -172,10 +177,10 @@ void loop() {
     Serial.print(":");
     Serial.println(minut);
  
-    // on/off buzzer
-   if(ans)
+    // robot active
+    if(ans)
     {
-        onBuzzer();
+        // onBuzzer();
         
         float dis1 = distance2Object(TRIG1, ECHO1);
         Serial.print("Distance1 = ");
@@ -184,42 +189,38 @@ void loop() {
         Serial.print("Distance2 = ");
         Serial.println(dis2);
 
-        int speed1 = 255;
-        int speed2 = 255;
+        int speed1, speed2;
 
-        if(dis1 < 20 && dis2 < 20)
+        if(isChangeSpeed(Clock, start_time))
+        {
+            speed1 = speedRandom();
+            speed2 = speedRandom();
+            Serial.print("Speed1: ");
+            Serial.println(speed1);
+            Serial.print("Speed2: ");
+            Serial.println(speed2);
+        }
+
+        if(dis1 < 50 && dis2 < 50)
         {
             moveUp(speed1, IN1, IN2);
             moveDown(speed2, IN3, IN4);
             Serial.println("Left up, Right down.");
-            changeSpeed(speed1);
-            changeSpeed(speed2);
         }
-        else{ 
-            if(dis1 < 20)
+        else
+        { 
+            if(dis1 < 50)
             {
                 moveDown(speed1, IN1, IN2);
                 moveDown(speed2, IN3, IN4);
                 Serial.println("Move Up.");
-                changeSpeed(speed2);
-                Serial.print("speed2 = ");
-                Serial.println(speed2);
-                changeSpeed(speed1);
-                Serial.print("speed1 = ");
-                Serial.println(speed1);
             }
             
-            if(dis2 < 20)
+            if(dis2 < 50)
             {
                 moveUp(speed1, IN1, IN2);
                 moveUp(speed2, IN3, IN4);
                 Serial.println("Move Down.");
-                changeSpeed(speed2);
-                Serial.print("speed2 = ");
-                Serial.println(speed2);
-                changeSpeed(speed1);
-                Serial.print("speed1 = ");
-                Serial.println(speed1);
             }
         }
     }

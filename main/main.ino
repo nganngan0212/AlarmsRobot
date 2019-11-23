@@ -202,7 +202,11 @@ void loop() {
                 moveDown(speed2, IN3, IN4);
                 Serial.println("Move Up.");
                 changeSpeed(speed2);
+                Serial.print("speed2 = ");
+                Serial.println(speed2);
                 changeSpeed(speed1);
+                Serial.print("speed1 = ");
+                Serial.println(speed1);
             }
             
             if(dis2 < 20)
@@ -211,9 +215,13 @@ void loop() {
                 moveUp(speed2, IN3, IN4);
                 Serial.println("Move Down.");
                 changeSpeed(speed2);
+                Serial.print("speed2 = ");
+                Serial.println(speed2);
                 changeSpeed(speed1);
+                Serial.print("speed1 = ");
+                Serial.println(speed1);
             }
         }
     }
-    delay(200);
+    delay(500);
 }

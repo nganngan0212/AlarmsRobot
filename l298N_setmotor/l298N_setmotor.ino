@@ -33,6 +33,6 @@ void loop() {
   {
     moveDown(255, IN3, IN4);
   }
-  
-//  moveUp(255, IN1, IN2);
+  delay(200);
+  moveUp(255, IN1, IN2);
 }

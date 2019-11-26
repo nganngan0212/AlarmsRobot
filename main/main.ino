@@ -8,11 +8,11 @@
 #define DAT 7
 #define RST 8
 //ultrasonic sensor1 in front
-#define TRIG1 12
-#define ECHO1 13
+#define TRIG2 12
+#define ECHO2 13
 //ultra sensor 2 behind
-#define TRIG2 10
-#define ECHO2 11
+#define TRIG1 10
+#define ECHO1 11
 
 #define rxPin 5
 #define txPin 4
@@ -112,7 +112,7 @@ float distance2Object(int trigPin, int echoPin)
     return distance;
 }
 
-bool isChangeSpeed(virtuabotixRTC rtc, int start_time)
+bool isChangeSpeed(virtuabotixRTC rtc, int &start_time)
 {
     rtc.updateTime();
     if(start_time == UNSET)
@@ -123,7 +123,7 @@ bool isChangeSpeed(virtuabotixRTC rtc, int start_time)
     else
     {
         int cur_time = rtc.hours*3600 + rtc.minutes*60 + rtc.seconds;
-        if(cur_time - start_time > 5)
+        if(cur_time - start_time >= 5)
         {
             start_time = cur_time;
             return true;
@@ -149,12 +149,14 @@ void setup()
     setupMotor1();
     setupMotor2();
 
-    //set time for clock module with (seconds, minutes, hours, dayofweek, dayofmonth, month, years)
-    Clock.setDS1302Time(00, 02, 18, 5, 24, 10, 2019); 
+//    set time for clock module with (seconds, minutes, hours, dayofweek, dayofmonth, month, years)
+//    Clock.setDS1302Time(00, 51, 7, 4, 27, 11, 2019); 
 }
 
 bool ans = false;
 int start_time = UNSET;
+String msg;
+bool is_set = false;
 
 void loop() {
     //update time
@@ -163,15 +165,19 @@ void loop() {
     int hou = Clock.hours;
     int minut = Clock.minutes;
 
-    String msg;
     if(hc06.available())
     {
         msg = hc06.readString();
+        is_set = true;
         Serial.print("Message: ");
         Serial.println(msg); //print message from phone
-        ans = check(msg, hou, minut);
     } 
-
+    
+    if(is_set)
+    {
+        ans = check(msg, hou, minut);
+        if(ans) is_set = false;
+    }
     //print hour and minutes
     Serial.print(hou);
     Serial.print(":");
@@ -180,7 +186,7 @@ void loop() {
     // robot active
     if(ans)
     {
-        // onBuzzer();
+        onBuzzer();
         
         float dis1 = distance2Object(TRIG1, ECHO1);
         Serial.print("Distance1 = ");
@@ -224,5 +230,5 @@ void loop() {
             }
         }
     }
-    delay(500);
+//    delay(500);
 }
